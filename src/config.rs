@@ -1,9 +1,11 @@
 extern crate toml;
+extern crate dirs;
 
 use config::toml::Table;
 use std::io::{Read, BufReader};
 use std::fs::File;
-use std::env::{set_var, var, home_dir};
+use std::env::{set_var, var};
+use self::dirs::home_dir;
 use std::process::Command;
 use prompt::Prompt;
 

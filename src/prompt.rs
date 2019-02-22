@@ -1,4 +1,7 @@
-use std::env::{current_dir, home_dir};
+extern crate dirs;
+
+use std::env::current_dir;
+use self::dirs::home_dir;
 use config::read_config_prompt;
 use std::io::{stdout, Write};
 

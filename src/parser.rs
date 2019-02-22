@@ -1,4 +1,6 @@
-use std::env::home_dir;
+extern crate dirs;
+
+use self::dirs::home_dir;
 
 include!(concat!(env!("OUT_DIR"), "/grammar.rs"));
 

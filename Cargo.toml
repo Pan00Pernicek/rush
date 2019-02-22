@@ -14,6 +14,7 @@ toml = "0.2.1"
 libc = "0.2.32"
 nix = "0.9.0"
 rustyline = "2.0.0"
+dirs = "1.0"
 
 #libc = { git = "https://github.com/rust-lang/libc.git" }
 #nix = { git = "https://github.com/nix-rust/nix.git" }

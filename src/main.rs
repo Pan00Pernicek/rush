@@ -4,6 +4,7 @@ extern crate rush;
 extern crate rustyline;
 extern crate libc;
 extern crate nix;
+extern crate dirs;
 
 use rush::builtins;
 use rush::prompt::Prompt;
@@ -13,7 +14,7 @@ use rustyline::{Config, CompletionType, Editor, Helper};
 use rustyline::completion::{Completer, FilenameCompleter, Pair};
 use rustyline::hint::Hinter;
 use rustyline::highlight::Highlighter;
-use std::env::home_dir;
+use self::dirs::home_dir;
 use std::process;
 use std::env;
 use std::io::{BufReader, BufRead};
