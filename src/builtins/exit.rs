@@ -1,6 +1,6 @@
 use std::process;
 
-pub fn exit(args: &Vec<String>) -> bool {
+pub fn exit(args: &Vec<String>) -> i32 {
     if args.len() > 0 {
         match args[0].parse::<i32>() {
             Ok(status) => process::exit(status),

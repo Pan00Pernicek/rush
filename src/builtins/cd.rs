@@ -6,7 +6,7 @@ use std::env;
 
 ///Change Directory
 ///Function used to internally change the directory of the shell
-pub fn change_directory(input: &Vec<String>) -> bool {
+pub fn change_directory(input: &Vec<String>) -> i32 {
     if input.is_empty() {
         env::set_current_dir(Path::new(env::var("HOME")
             .expect("No HOME variable").as_str()));
@@ -45,10 +45,10 @@ pub fn change_directory(input: &Vec<String>) -> bool {
                 .expect("Failed to set current directory");
         } else {
             println!("Invalid path or input");
-            return false;
+            return 1;
         }
     }
-    true
+    0
 }
 
 

@@ -6,7 +6,7 @@ mod export;
 mod source;
 mod exit;
 
-pub type Builtin = fn(&Vec<String>) -> bool;
+pub type Builtin = fn(&Vec<String>) -> i32;
 
 pub fn get_builtins() -> HashMap<String, Builtin> {
     let mut builtins = HashMap::new();

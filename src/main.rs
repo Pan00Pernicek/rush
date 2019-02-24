@@ -98,6 +98,7 @@ fn main() {
         interpet_line(l, &builtins);
     }
 
+    // Run script
     let mut cmd_args = env::args().skip(1);
     let file_name = cmd_args.next();
     if file_name.is_some() {
@@ -114,6 +115,7 @@ fn main() {
             let l = line.unwrap();
             interpet_line(l, &builtins);
         }
+        return;
     }
 
     let mut home_config = home_dir().expect("No Home directory");
