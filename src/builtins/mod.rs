@@ -5,6 +5,8 @@ mod bools;
 mod export;
 mod source;
 mod exit;
+mod read;
+mod alias;
 
 pub type Builtin = fn(&Vec<String>) -> i32;
 
@@ -16,5 +18,7 @@ pub fn get_builtins() -> HashMap<String, Builtin> {
     builtins.insert("false".to_string(), bools::bool_false as Builtin);
     builtins.insert("export".to_string(), export::export as Builtin);
     builtins.insert("source".to_string(), source::source as Builtin);
+    builtins.insert("read".to_string(), read::read as Builtin);
+    builtins.insert("alias".to_string(), alias::alias as Builtin);
     builtins
 }
