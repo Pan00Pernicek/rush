@@ -22,9 +22,9 @@ pub fn interpet_line(line: String, builtins: &HashMap<String, Builtin>) -> bool 
     if parse_tree.is_none() {
         return true;
     }
-    let (statment, mut list, end_op) = parse_tree.unwrap();
+    let (statement, mut list, end_op) = parse_tree.unwrap();
     // println!("{:?} | {:?} | {:?}", statment, list, end_op);
-    let mut current = statment.command;
+    let mut current = statement.command;
     replace_vars(&mut current);
     if list.len() == 0 {
         exec_command(current, end_op, &builtins)
