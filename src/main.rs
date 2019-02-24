@@ -86,7 +86,7 @@ fn main() {
     // Run config file
     let mut home_config = home_dir().expect("No Home directory");
     home_config.push(".rushrc");
-    let f = match File::open(&home_config) {
+    match File::open(&home_config) {
         Ok(f) => {
             let file = BufReader::new(&f);
             for line in file.lines() {
@@ -102,20 +102,21 @@ fn main() {
     let file_name = cmd_args.next();
     if file_name.is_some() {
         let file_name = file_name.unwrap();
-        let f = match File::open(&file_name) {
-            Ok(f) => f,
+        match File::open(&file_name) {
+            Ok(f) => {
+                let file = BufReader::new(&f);
+                for line in file.lines() {
+                    let l = line.unwrap();
+                    interpet_line(l, &builtins);
+                }
+                return;
+            },
             Err(_) => {
                 println!("Couldn't open file {}", file_name);
                 return;
             }
         };
-        let file = BufReader::new(&f);
-        for line in file.lines() {
-            let l = line.unwrap();
-            interpet_line(l, &builtins);
-        }
-        return;
-    }
+   }
 
     let mut home_config = home_dir().expect("No Home directory");
     home_config.push(".rush_history");
