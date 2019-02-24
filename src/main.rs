@@ -83,20 +83,19 @@ fn main() {
 
     let builtins = builtins::get_builtins();
 
+    // Run config file
     let mut home_config = home_dir().expect("No Home directory");
     home_config.push(".rushrc");
     let f = match File::open(&home_config) {
-        Ok(f) => f,
-        Err(_) => {
-            println!("Couldn't open file .rushrc");
-            return;
-        }
+        Ok(f) => {
+            let file = BufReader::new(&f);
+            for line in file.lines() {
+                let l = line.unwrap();
+                interpet_line(l, &builtins);
+            }
+        },
+        Err(_) => {}
     };
-    let file = BufReader::new(&f);
-    for line in file.lines() {
-        let l = line.unwrap();
-        interpet_line(l, &builtins);
-    }
 
     // Run script
     let mut cmd_args = env::args().skip(1);
