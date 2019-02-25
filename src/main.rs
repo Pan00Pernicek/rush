@@ -127,9 +127,7 @@ fn main() {
     let input_config = Config::builder().completion_type(CompletionType::List).build();
     let mut input_buffer = Editor::with_config(input_config);
     input_buffer.set_helper(Some(RushHelper(FilenameCompleter::new())));
-    if let Err(_) = input_buffer.load_history(history) {
-        println!("No previous history.");
-    }
+    if let Err(_) = input_buffer.load_history(history) {}
     let mut prompt = Prompt::new();
 
     // Loop to recieve and execute commands
