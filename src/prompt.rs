@@ -4,7 +4,6 @@ use std::env;
 use std::env::var;
 use std::env::current_dir;
 use self::dirs::home_dir;
-use std::io::{stdout, Write};
 use std::process::Command;
 
 ///Prompt
@@ -108,12 +107,5 @@ impl Prompt {
             self.cwd = buff.as_path()
                 .to_str().expect("Failed to turn path into str").to_owned();
         }
-    }
-
-    pub fn print(&mut self) {
-        self.update_cwd();
-        self.update_prompt();
-        print!("{}", self.get_user_p());
-        stdout().flush().expect("Could not flush stdout");
     }
 }
