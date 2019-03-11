@@ -69,13 +69,8 @@ impl Prompt {
     pub fn get_cwd(&self) -> String {
         self.cwd.to_owned()
     }
-
-    pub fn get_cwn_abs(&self) -> String {
-        let buff = current_dir().expect("No current directory");
-        buff.to_str().expect("Failed to become a str").to_owned()
-    }
-
-    fn interpret_escapes(&self, escape: char) -> Result<String, ()> {
+   
+   fn interpret_escapes(&self, escape: char) -> Result<String, ()> {
         match escape {
             'U' if cfg!(windows) => Ok(var("USERNAME").expect("$USERNAME not set")),
             'U' if cfg!(unix)    => Ok(var("USER").expect("$USER not set")),

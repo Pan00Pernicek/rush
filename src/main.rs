@@ -132,6 +132,8 @@ fn main() {
 
     // Loop to recieve and execute commands
     loop {
+        &prompt.update_cwd();
+        &prompt.update_prompt();
         let line = input_buffer.readline(&prompt.get_user_p());
         match line {
             Ok(line) => {
