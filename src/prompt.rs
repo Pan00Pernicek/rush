@@ -1,8 +1,8 @@
 extern crate dirs;
 
+use std::env;
 use std::env::current_dir;
 use self::dirs::home_dir;
-use config::read_config_prompt;
 use std::io::{stdout, Write};
 
 ///Prompt
@@ -33,7 +33,10 @@ impl Prompt {
     ///Only needs to be called if using cd or su at this point
     ///in time
     pub fn update_prompt(&mut self) {
-        self.user_p = read_config_prompt(self);
+        self.user_p = match env::var("RUSH_PROMPT") {
+            Ok(prompt) => prompt,
+            Err(_) => "R$ ".to_owned(),
+        };
     }
 
     ///Get User P

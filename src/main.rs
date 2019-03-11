@@ -132,10 +132,7 @@ fn main() {
 
     // Loop to recieve and execute commands
     loop {
-        prompt.print();
-        print!("rush >");
-        //let line = input_buffer.readline(&prompt.get_user_p());
-        let line = input_buffer.readline("");
+        let line = input_buffer.readline(&prompt.get_user_p());
         match line {
             Ok(line) => {
                 input_buffer.add_history_entry(line.as_ref());
