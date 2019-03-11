@@ -1,9 +1,11 @@
 extern crate dirs;
 
 use std::env;
+use std::env::var;
 use std::env::current_dir;
 use self::dirs::home_dir;
 use std::io::{stdout, Write};
+use std::process::Command;
 
 ///Prompt
 ///Struct containing prompt and cwd for use on every new line
@@ -33,10 +35,27 @@ impl Prompt {
     ///Only needs to be called if using cd or su at this point
     ///in time
     pub fn update_prompt(&mut self) {
-        self.user_p = match env::var("RUSH_PROMPT") {
+        let left_value = match env::var("RUSH_PROMPT") {
             Ok(prompt) => prompt,
             Err(_) => "R$ ".to_owned(),
         };
+        
+        let mut left = left_value.split('%');
+        let mut prompt = left.next().unwrap().to_string();
+        for i in left {
+            if !i.is_empty() {
+                let escape: Result<String, ()> = self.interpret_escapes(i.chars().next().unwrap());
+                match escape {
+                    Ok(e) => prompt.push_str(&e),
+                    Err(_) => prompt.push_str("Failed to parse escape"),
+                }
+                //Add non Prompt special chars to prompt
+                prompt.push_str(&i[1..]);
+            }
+        }
+        prompt.push(' ');
+        
+        self.user_p = prompt;
     }
 
     ///Get User P
@@ -56,6 +75,24 @@ impl Prompt {
         buff.to_str().expect("Failed to become a str").to_owned()
     }
 
+    fn interpret_escapes(&self, escape: char) -> Result<String, ()> {
+        match escape {
+            'U' if cfg!(windows) => Ok(var("USERNAME").expect("$USERNAME not set")),
+            'U' if cfg!(unix)    => Ok(var("USER").expect("$USER not set")),
+            'H' if cfg!(windows) => Ok(var("USERDOMAIN").expect("$USERDOMAIN not set")),
+            'H' if cfg!(unix)    =>
+                Ok(String::from_utf8(Command::new("uname")
+                .arg("-n").output()
+                .expect("No uname command").stdout)
+                .expect("Failed to convert to string")
+                .trim().to_string()),
+
+            'L' => Ok(self.get_cwd()),
+            'R' => Ok("$".to_string()),
+            _ => Err(()),
+        }
+    }
+    
     ///Update CWD
     ///Used to update the CWD if using CD
     pub fn update_cwd(&mut self) {
