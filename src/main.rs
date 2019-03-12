@@ -5,6 +5,7 @@ extern crate rustyline;
 extern crate libc;
 extern crate nix;
 extern crate dirs;
+extern crate clap;
 
 use rush::builtins;
 use rush::prompt::Prompt;
@@ -22,6 +23,7 @@ use std::fs::File;
 use nix::sys::signal;
 use nix::sys::signal::{SigAction, SigHandler, SaFlags, SigSet, sigaction};
 use std::borrow::Cow::{self, Borrowed, Owned};
+use clap::{Arg, App, SubCommand};
 
 
 struct RushHelper(FilenameCompleter);
@@ -81,6 +83,13 @@ fn main() {
         }
     }
 
+    // Parse command line options
+    let matches = App::new("rush")
+        .version("0.0.2")
+        .about("Rust Shell")
+        .get_matches();
+
+    // Load builtins
     let builtins = builtins::get_builtins();
 
     // Run config file
