@@ -1,10 +1,11 @@
 extern crate dirs;
+extern crate gethostname;
 
 use std::env;
 use std::env::var;
 use std::env::current_dir;
 use self::dirs::home_dir;
-use std::process::Command;
+use self::gethostname::gethostname;
 
 ///Prompt
 ///Struct containing prompt and cwd for use on every new line
@@ -73,14 +74,7 @@ impl Prompt {
         match escape {
             'U' if cfg!(windows) => Ok(var("USERNAME").expect("$USERNAME not set")),
             'U' if cfg!(unix)    => Ok(var("USER").expect("$USER not set")),
-            'H' if cfg!(windows) => Ok(var("USERDOMAIN").expect("$USERDOMAIN not set")),
-            'H' if cfg!(unix)    =>
-                Ok(String::from_utf8(Command::new("uname")
-                .arg("-n").output()
-                .expect("No uname command").stdout)
-                .expect("Failed to convert to string")
-                .trim().to_string()),
-
+            'H' => Ok(gethostname().into_string().expect("No hostname")),
             'L' => Ok(self.get_cwd()),
             'R' => Ok("$".to_string()),
             _ => Err(()),

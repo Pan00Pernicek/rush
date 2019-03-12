@@ -90,8 +90,7 @@ fn main() {
         Ok(f) => {
             let file = BufReader::new(&f);
             for line in file.lines() {
-                let l = line.unwrap();
-                interpet_line(l, &builtins);
+                interpet_line(line.unwrap(), &builtins);
             }
         },
         Err(_) => {}
@@ -106,8 +105,7 @@ fn main() {
             Ok(f) => {
                 let file = BufReader::new(&f);
                 for line in file.lines() {
-                    let l = line.unwrap();
-                    interpet_line(l, &builtins);
+                    interpet_line(line.unwrap(), &builtins);
                 }
                 return;
             },
@@ -118,10 +116,10 @@ fn main() {
         };
    }
 
-    let mut home_config = home_dir().expect("No Home directory");
-    home_config.push(".rush_history");
+    let mut history_file = home_dir().expect("No Home directory");
+    history_file.push(".rush_history");
     let history =
-        home_config.as_path().to_str().expect("Should have a home directory to turn into a str");
+        history_file.as_path().to_str().expect("Should have a home directory to turn into a str");
 
     // Set up buffer to read inputs and History Buffer
     let input_config = Config::builder().completion_type(CompletionType::List).build();
