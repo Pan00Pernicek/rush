@@ -9,7 +9,8 @@ extern crate clap;
 
 use rush::builtins;
 use rush::prompt::Prompt;
-use rush::interpeter::*;
+use rush::interpreter::*;
+use rush::script::*;
 use rustyline::error::ReadlineError;
 use rustyline::{Config, CompletionType, Editor, Helper};
 use rustyline::completion::{Completer, FilenameCompleter, Pair};
@@ -95,15 +96,7 @@ fn main() {
     // Run config file
     let mut home_config = home_dir().expect("No Home directory");
     home_config.push(".rushrc");
-    match File::open(&home_config) {
-        Ok(f) => {
-            let file = BufReader::new(&f);
-            for line in file.lines() {
-                interpet_line(line.unwrap(), &builtins);
-            }
-        },
-        Err(_) => {}
-    };
+    run_script(home_config.as_path(), &builtins);
 
     // Run script
     let mut cmd_args = env::args().skip(1);
@@ -114,7 +107,7 @@ fn main() {
             Ok(f) => {
                 let file = BufReader::new(&f);
                 for line in file.lines() {
-                    interpet_line(line.unwrap(), &builtins);
+                    interpret_line(line.unwrap(), &builtins);
                 }
                 return;
             },
@@ -145,7 +138,7 @@ fn main() {
         match line {
             Ok(line) => {
                 input_buffer.add_history_entry(line.as_ref());
-                interpet_line(line, &builtins);
+                interpret_line(line, &builtins);
             }
             Err(ReadlineError::Interrupted) => {
                 print!("^C");

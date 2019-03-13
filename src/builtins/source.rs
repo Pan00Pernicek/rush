@@ -1,4 +1,4 @@
-use interpeter::*;
+use interpreter::*;
 use builtins::get_builtins;
 use std::io::{BufReader, BufRead};
 use std::fs::File;
@@ -15,7 +15,7 @@ pub fn source(args: &Vec<String>) -> i32 {
     let builtins = get_builtins();
     for line in file.lines() {
         let l = line.unwrap();
-        interpet_line(l, &builtins);
+        interpret_line(l, &builtins);
     };
     0
 }
