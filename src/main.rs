@@ -21,6 +21,7 @@ use std::process;
 use std::env;
 use std::io::{BufReader, BufRead};
 use std::fs::File;
+use std::path::Path;
 use nix::sys::signal;
 use nix::sys::signal::{SigAction, SigHandler, SaFlags, SigSet, sigaction};
 use std::borrow::Cow::{self, Borrowed, Owned};
@@ -102,21 +103,8 @@ fn main() {
     let mut cmd_args = env::args().skip(1);
     let file_name = cmd_args.next();
     if file_name.is_some() {
-        let file_name = file_name.unwrap();
-        match File::open(&file_name) {
-            Ok(f) => {
-                let file = BufReader::new(&f);
-                for line in file.lines() {
-                    interpret_line(line.unwrap(), &builtins);
-                }
-                return;
-            },
-            Err(_) => {
-                println!("Couldn't open file {}", file_name);
-                return;
-            }
-        };
-   }
+        run_script(Path::new(&file_name.unwrap()), &builtins);
+    }
 
     let mut history_file = home_dir().expect("No Home directory");
     history_file.push(".rush_history");
