@@ -19,8 +19,6 @@ use rustyline::highlight::Highlighter;
 use self::dirs::home_dir;
 use std::process;
 use std::env;
-use std::io::{BufReader, BufRead};
-use std::fs::File;
 use std::path::Path;
 use nix::sys::signal;
 use nix::sys::signal::{SigAction, SigHandler, SaFlags, SigSet, sigaction};
@@ -89,6 +87,14 @@ fn main() {
     let matches = App::new("rush")
         .version("0.0.2")
         .about("Rust Shell")
+        .arg(Arg::with_name("command")
+            .short("c")
+            .value_name("command")
+            .multiple(true)
+            .help("Command(s) to parse"))
+        .arg(Arg::with_name("command_file")
+            .multiple(true)
+            .help("Commands or files"))
         .get_matches();
 
     // Load builtins
@@ -99,11 +105,16 @@ fn main() {
     home_config.push(".rushrc");
     run_script(home_config.as_path(), &builtins);
 
-    // Run script
-    let mut cmd_args = env::args().skip(1);
-    let file_name = cmd_args.next();
-    if file_name.is_some() {
-        run_script(Path::new(&file_name.unwrap()), &builtins);
+    // Run script(s)
+    for command_or_file in matches.value_of("command_file") {
+        run_script(Path::new(&command_or_file), &builtins);
+        return
+    }
+
+    // Run command(s)
+    for command in matches.value_of("command") {
+        interpret_line(command.to_string(), &builtins);
+        return
     }
 
     let mut history_file = home_dir().expect("No Home directory");
