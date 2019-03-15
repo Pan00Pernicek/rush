@@ -18,12 +18,11 @@ use rustyline::hint::Hinter;
 use rustyline::highlight::Highlighter;
 use self::dirs::home_dir;
 use std::process;
-use std::env;
 use std::path::Path;
 use nix::sys::signal;
 use nix::sys::signal::{SigAction, SigHandler, SaFlags, SigSet, sigaction};
 use std::borrow::Cow::{self, Borrowed, Owned};
-use clap::{Arg, App, SubCommand};
+use clap::{Arg, App};
 
 
 struct RushHelper(FilenameCompleter);
@@ -92,6 +91,11 @@ fn main() {
             .value_name("command")
             .multiple(true)
             .help("Command(s) to parse"))
+        .arg(Arg::with_name("file")
+            .short("f")
+            .value_name("file")
+            .multiple(true)
+            .help("Files to run"))
         .arg(Arg::with_name("command_file")
             .multiple(true)
             .help("Commands or files"))

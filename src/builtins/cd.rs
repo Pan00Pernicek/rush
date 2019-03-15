@@ -1,6 +1,8 @@
-#![allow(unused_must_use)] //supresses warning from use of env::var("Home")
+extern crate dirs;
+
 use std::path::{Path, PathBuf};
 use std::env;
+use self::dirs::home_dir;
 //use std::fs::PathExt; //Use of exists() is considered unstable. Might break in the future
 
 
@@ -8,19 +10,13 @@ use std::env;
 ///Function used to internally change the directory of the shell
 pub fn change_directory(input: &Vec<String>) -> i32 {
     if input.is_empty() {
-        env::set_current_dir(Path::new(env::var("HOME")
-            .expect("No HOME variable").as_str()));
+        env::set_current_dir(Path::new(&home_dir().expect("No home directory"))).expect("Failed to set current directory");
     } else {
         let mut buffer = PathBuf::new();
         for i in input {
             if i.contains('~') {
                 let i_split = i.split('~').next();
-                #[cfg(unix)]
-                buffer.push(Path::new(env::var("HOME")
-                    .expect("No HOME variable").as_str()));
-                #[cfg(windows)]
-                buffer.push(Path::new(env::var("USERPROFILE")
-                    .expect("No USERPROFILE variable").as_str()));
+                buffer.push(Path::new(&home_dir().expect("No home directory")));
                 if i_split.is_some() {
                     buffer.push(Path::new(i_split.expect("Failed to split")));
                 }
