@@ -14,7 +14,8 @@ pub fn run_script(file_name: &Path, shell_state: &mut ShellState) {
                 interpret_line(line.unwrap(), shell_state);
             }
         },
-        Err(_) => {
+        Err(e) => {
+            eprintln!("{:?}", e);
             return;
         }
     };
