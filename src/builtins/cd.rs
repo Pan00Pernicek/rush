@@ -1,6 +1,8 @@
 extern crate dirs;
 
 use shellstate::ShellState;
+use builtins::get_builtins;
+use prompt::Prompt;
 use std::path::{Path, PathBuf};
 use std::env;
 use self::dirs::home_dir;
@@ -60,7 +62,12 @@ mod tests {
     fn test_change_directory_ok() {
         let vec = vec!["/".to_owned()];
         let dir = Path::new("/tmp").to_str().to_owned();
-        change_directory(&vec);
+        let shell_state = &mut ShellState {
+            prompt: Prompt::new(),
+            input_buffer: "".to_owned(),
+            builtins: get_builtins(),
+        };
+        change_directory(&vec, shell_state);
         let new_dir = env::current_dir()
             .expect("Failed to get current directory");
         let new_dir = new_dir.to_str();
@@ -74,7 +81,12 @@ mod tests {
         let dir = Path::new("/").to_str().to_owned();
         #[cfg(windows)]
         let dir = Path::new("C:\\").to_str().to_owned();
-        change_directory(&vec);
+        let shell_state = &mut ShellState {
+            prompt: Prompt::new(),
+            input_buffer: "".to_owned(),
+            builtins: get_builtins(),
+        };
+        change_directory(&vec, shell_state);
         let new_dir = env::current_dir()
             .expect("Failed to get current directory");
         let new_dir = new_dir.to_str().to_owned();
