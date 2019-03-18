@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use shellstate::ShellState;
 
 mod cd;
 mod export;
@@ -7,7 +8,7 @@ mod exit;
 mod read;
 mod alias;
 
-pub type Builtin = fn(&Vec<String>) -> i32;
+pub type Builtin = fn(&Vec<String>, &mut ShellState) -> i32;
 
 pub fn get_builtins() -> HashMap<String, Builtin> {
     let mut builtins = HashMap::new();

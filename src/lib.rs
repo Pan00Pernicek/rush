@@ -5,3 +5,4 @@ pub mod parser;
 pub mod interpreter;
 pub mod completion;
 pub mod script;
+pub mod shellstate;

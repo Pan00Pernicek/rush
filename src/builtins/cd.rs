@@ -1,5 +1,6 @@
 extern crate dirs;
 
+use shellstate::ShellState;
 use std::path::{Path, PathBuf};
 use std::env;
 use self::dirs::home_dir;
@@ -8,7 +9,7 @@ use self::dirs::home_dir;
 
 ///Change Directory
 ///Function used to internally change the directory of the shell
-pub fn change_directory(input: &Vec<String>) -> i32 {
+pub fn change_directory(input: &Vec<String>, shell_state: &mut ShellState) -> i32 {
     if input.is_empty() {
         env::set_current_dir(Path::new(&home_dir().expect("No home directory"))).expect("Failed to set current directory");
     } else {

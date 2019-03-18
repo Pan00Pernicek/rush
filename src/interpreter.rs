@@ -1,12 +1,13 @@
 #![allow(unused_variables)]
 use parser;
 use parser::{Command, Redirect};
-use builtins::Builtin;
+use builtins::{Builtin, get_builtins};
 use process::execute::*;
+use shellstate::ShellState;
 use std::env;
 use std::collections::HashMap;
 
-pub fn interpret_line(line: String, builtins: &HashMap<String, Builtin>) -> bool {
+pub fn interpret_line(line: String, shell_state: &mut ShellState) -> bool {
     if line.is_empty() {
         return true;
     }
@@ -23,28 +24,33 @@ pub fn interpret_line(line: String, builtins: &HashMap<String, Builtin>) -> bool
         return true;
     }
     let (statement, mut list, end_op) = parse_tree.unwrap();
+    println!("{:?} | {:?} | {:?}", statement, list, end_op);
     let mut current = statement.command;
     replace_vars(&mut current);
     if list.len() == 0 {
-        exec_command(current, end_op, &builtins)
+        exec_command(current, end_op, shell_state)
     } else {
         while let Some((op, statment)) = list.pop() {
             replace_vars(&mut current);
-            exec_command(current, Some(op), &builtins);
+            exec_command(current, Some(op), shell_state);
             current = statment.command;
         }
-        exec_command(current, end_op, &builtins)
+        exec_command(current, end_op, shell_state)
     }
 }
 
 fn exec_command(current: Command,
                 end_op: Option<String>,
-                builtins: &HashMap<String, Builtin>)
+                shell_state: &mut ShellState)
                 -> bool {
+
     let mut current = current;
+    
+    // This is a very very bad solution
+    let builtins = get_builtins();
     if builtins.contains_key(&current.name) {
         match builtins.get(&current.name) {
-            Some(f) => f(&current.args),
+            Some(f) => f(&current.args, shell_state),
             None => {
                 println!("Builtin Error");
                 return false;
@@ -52,6 +58,7 @@ fn exec_command(current: Command,
         };
         return true;
     }
+
     if current.pipe.is_some() {
         let child_result = first_pipe(&current.name, &current.args, &current.vars);
         let mut child = child_result.expect("Failed to unwrap an Result");

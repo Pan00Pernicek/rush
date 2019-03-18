@@ -11,6 +11,7 @@ use rush::builtins;
 use rush::prompt::Prompt;
 use rush::interpreter::*;
 use rush::script::*;
+use rush::shellstate::ShellState;
 use rustyline::error::ReadlineError;
 use rustyline::{Config, CompletionType, Editor, Helper};
 use rustyline::completion::{Completer, FilenameCompleter, Pair};
@@ -101,23 +102,27 @@ fn main() {
             .help("Commands or files"))
         .get_matches();
 
-    // Load builtins
-    let builtins = builtins::get_builtins();
+    // Initialize Shell State
+    let shell_state = &mut ShellState {
+        prompt: Prompt::new(),
+        input_buffer: "".to_owned(),
+        builtins: builtins::get_builtins(),
+    };
 
     // Run config file
     let mut home_config = home_dir().expect("No Home directory");
     home_config.push(".rushrc");
-    run_script(home_config.as_path(), &builtins);
+    run_script(home_config.as_path(), shell_state);
 
     // Run script(s)
     for command_or_file in matches.value_of("command_file") {
-        run_script(Path::new(&command_or_file), &builtins);
+        run_script(Path::new(&command_or_file), shell_state);
         return
     }
 
     // Run command(s)
     for command in matches.value_of("command") {
-        interpret_line(command.to_string(), &builtins);
+        interpret_line(command.to_string(), shell_state);
         return
     }
 
@@ -141,7 +146,7 @@ fn main() {
         match line {
             Ok(line) => {
                 input_buffer.add_history_entry(line.as_ref());
-                interpret_line(line, &builtins);
+                interpret_line(line, shell_state);
             }
             Err(ReadlineError::Interrupted) => {
                 print!("^C");

@@ -1,6 +1,7 @@
 use std::env;
+use shellstate::ShellState;
 
-pub fn export(args: &Vec<String>) -> i32 {
+pub fn export(args: &Vec<String>, shell_state: &mut ShellState) -> i32 {
     if args.len() > 0 {
         for arg in args {
             let parts: Vec<&str> = arg.split("=").collect();
