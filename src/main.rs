@@ -12,6 +12,7 @@ use rush::prompt::Prompt;
 use rush::interpreter::*;
 use rush::script::*;
 use rush::shellstate::ShellState;
+use rush::completion::RushHelper;
 use rustyline::error::ReadlineError;
 use rustyline::{Config, CompletionType, Editor, Helper};
 use rustyline::completion::{Completer, FilenameCompleter, Pair};
@@ -24,39 +25,6 @@ use nix::sys::signal;
 use nix::sys::signal::{SigAction, SigHandler, SaFlags, SigSet, sigaction};
 use std::borrow::Cow::{self, Borrowed, Owned};
 use clap::{Arg, App};
-
-
-struct RushHelper(FilenameCompleter);
-
-impl Completer for RushHelper {
-    type Candidate = Pair;
-
-    fn complete(&self, line: &str, pos: usize) -> Result<(usize, Vec<Pair>), ReadlineError> {
-        self.0.complete(line, pos)
-    }
-}
-
-impl Highlighter for RushHelper {
-    fn highlight_prompt<'p>(&self, prompt: &'p str) -> Cow<'p, str> {
-        Borrowed(prompt)
-    }
-
-    fn highlight_hint<'h>(&self, hint: &'h str) -> Cow<'h, str> {
-        Owned("\x1b[1m".to_owned() + hint + "\x1b[m")
-    }
-}
-
-impl Hinter for RushHelper {
-    fn hint(&self, line: &str, _pos: usize) -> Option<String> {
-        if line == "hello" {
-            Some(" World".to_owned())
-        } else {
-            None
-        }
-    }
-}
-
-impl Helper for RushHelper {}
 
 fn main() {
     #[cfg(unix)]    {
@@ -132,7 +100,7 @@ fn main() {
         history_file.as_path().to_str().expect("Should have a home directory to turn into a str");
 
     // Set up buffer to read inputs and History Buffer
-    let input_config = Config::builder().completion_type(CompletionType::List).build();
+    let input_config = Config::builder().completion_type(CompletionType::Circular).build();
     let mut input_buffer = Editor::with_config(input_config);
     input_buffer.set_helper(Some(RushHelper(FilenameCompleter::new())));
     if let Err(_) = input_buffer.load_history(history) {}
