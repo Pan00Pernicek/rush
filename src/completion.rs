@@ -19,7 +19,7 @@ impl Completer for RushHelper {
 
 impl Highlighter for RushHelper {
     fn highlight_prompt<'p>(&self, prompt: &'p str) -> Cow<'p, str> {
-        Borrowed(prompt)
+        Owned("\x1b[1m".to_owned() + prompt + "\x1b[m")
     }
 
     fn highlight_hint<'h>(&self, hint: &'h str) -> Cow<'h, str> {
