@@ -23,7 +23,6 @@ use std::process;
 use std::path::Path;
 use nix::sys::signal;
 use nix::sys::signal::{SigAction, SigHandler, SaFlags, SigSet, sigaction};
-use std::borrow::Cow::{self, Borrowed, Owned};
 use clap::{Arg, App};
 
 fn main() {
