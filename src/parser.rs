@@ -12,13 +12,13 @@ pub fn get_home_dir() -> String {
         .to_string()
 }
 
-#[derive(PartialEq, Debug)]
-pub enum StackItem {
-    Statement {
-        command: Command,
-        next: Option<(String, Box<Statement>)>,
-    },
-}
+//#[derive(PartialEq, Debug)]
+//pub enum StackItem {
+//    Statement {
+//        command: Command,
+//        next: Option<(String, Box<Statement>)>,
+//    },
+//}
 
 #[derive(PartialEq, Debug)]
 pub struct Command {

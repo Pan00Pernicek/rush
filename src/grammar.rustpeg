@@ -27,8 +27,6 @@ chainedStatement -> (String, Box<Statement>)
 
 subshell = "(" space* statementList space* ")"
 
-condition = script
-
 pub command -> Command
     = pre:variableAssignment* space*
     name:commandName
@@ -152,4 +150,4 @@ pipe -> Box<Command>
 
 EOF = !.
 
-pub test = command
+//pub test = command

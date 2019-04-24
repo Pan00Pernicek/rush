@@ -7,3 +7,7 @@ pub struct ShellState {
     pub input_buffer: String,
     pub builtins: HashMap<String, Builtin>,
 }
+
+impl ShellState {
+
+}
